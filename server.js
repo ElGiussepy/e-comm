@@ -1,10 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
-const authRoutes = require('./routes/authRoutes'); // Importamos las rutas de autenticación
-const Product = require('./models/product'); // Importamos el modelo de producto
+const { engine } = require('express-handlebars');
+const authRoutes = require('./routes/authRoutes'); // Rutas de autenticación
+const Product = require('./models/product'); // Modelo de producto
 
 const app = express();
+
+// Configurar Handlebars como motor de plantillas
+app.engine('handlebars', engine());
+app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, 'views'));
 
 // Conectar a MongoDB
 const dbURI = 'mongodb+srv://elgiussepy:JereyCarla010116@myweb.ca1b2.mongodb.net/?retryWrites=true&w=majority&appName=MyWeb';
@@ -14,12 +20,12 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 // Middleware para analizar JSON
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 // Servir archivos estáticos desde 'public'
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
 
-// Usar rutas de autenticación
-app.use('/auth', authRoutes);
+// Rutas de autenticación
+app.use('/auth', authRoutes); // Aquí incluimos las rutas del archivo authRoutes.js
 
 // Ruta para añadir productos
 app.post('/add-product', (req, res) => {
@@ -41,9 +47,9 @@ app.get('/products', (req, res) => {
         .catch((err) => res.status(500).json({ error: err.message }));
 });
 
-// Servir index.html en la ruta principal
+// Ruta principal - Renderiza la página con Handlebars
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.render('home'); // Renderiza la vista 'home.handlebars'
 });
 
 // Iniciar el servidor
