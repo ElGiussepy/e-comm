@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Tienda Online</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+        }
+        main {
+            padding: 2rem;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bienvenido a Mi Tienda Online</h1>
+    </header>
+
+    <main>
+        <h2>Esta es tu primera página de e-commerce</h2>
+        <p>Aquí podrás agregar productos y hacer compras.</p>
+        <h2>Productos disponibles</h2>
+        <div id="products-container"></div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Mi Tienda Online</p>
+    </footer>
+    <script>
+        // Obtener productos desde el servidor
+        fetch('/products')
+            .then(response => response.json())
+            .then(products => {
+                const container = document.getElementById('products-container');
+    
+                // Crear un elemento HTML para cada producto
+                products.forEach(product => {
+                    const productDiv = document.createElement('div');
+                    productDiv.classList.add('product');
+    
+                    productDiv.innerHTML = `
+                        <h3>${product.name}</h3>
+                        <p>Precio: $${product.price}</p>
+                        <p>${product.description}</p>
+                        <hr>
+                    `;
+                    container.appendChild(productDiv);
+                });
+            })
+            .catch(error => {
+                console.error('Error al obtener los productos:', error);
+            });
+    </script>
+    
+</body>
+</html>
